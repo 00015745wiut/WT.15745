@@ -1,0 +1,87 @@
+include ../head.pug
+body
+  .container.mt-5.p-4.rounded.shadow-lg.bg-white
+    h1.text-center.mb-4 #{mode} Plant
+    form
+      .form-group.mb-3
+        label(for="plantName" class="form-label") Plant Name
+        input(type="text" class="form-control" id="plantName" name="plantName" placeholder="Enter plant name" required)
+      .form-group.mb-3
+        label(for="plantType" class="form-label") Plant Type
+        input(type="text" class="form-control" id="plantType" name="plantType" placeholder="Enter plant type" required)
+      .form-group.mb-3
+        label(for="plantingDate" class="form-label") Planting Date/Time
+        .input-group.date(id="datetimepicker1" data-target-input="nearest")
+          input(type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" id="plantingDate" name="plantingDate" placeholder="Select planting date/time" required)
+          .input-group-append(data-target="#datetimepicker1" data-toggle="datetimepicker")
+            .input-group-text
+              i.fas.fa-calendar-alt
+      .form-group.mb-3
+        label(for="plantLocation" class="form-label") Location
+        input(type="text" class="form-control" id="plantLocation" name="plantLocation" placeholder="Enter plant location" required)
+
+      .d-flex.justify-content-between
+        button(type="button" class="btn btn-success" onclick="submitForm()") #{mode === 'Update' ? 'Update' : 'Add'}
+        button(type="button" class="btn btn-primary" onclick="window.location.href='/'") Back to list
+
+  script.
+    const format = 'DD/MM/YYYY HH:mm'
+    const picker = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'), {
+        localization: {
+            locale: 'fr'
+        }
+    })
+    picker.dates.formatInput = function(date) {
+        return moment(date).format(format)
+    }
+
+    if ("#{mode}" === "Update") {
+      const plantData = !{JSON.stringify(plantData || {})}.plant;
+      document.getElementById('plantName').value = plantData.plantName || '';
+      document.getElementById('plantType').value = plantData.plantType || '';
+      picker.dates.setValue(new tempusDominus.DateTime(moment(plantData.plantingDate, format)));
+      document.getElementById('plantLocation').value = plantData.plantLocation || '';
+    }
+
+    function submitForm() {
+      const plantData = {
+        plantName: document.getElementById('plantName').value,
+        plantType: document.getElementById('plantType').value,
+        plantingDate: document.getElementById('plantingDate').value,
+        plantLocation: document.getElementById('plantLocation').value,
+      };
+
+      const url = "#{mode}" === "Update" ? `/api/plant/${!{JSON.stringify(plantData || {})}.id}` : '/api/plant';
+      const method = "#{mode}" === "Update" ? 'put' : 'post';
+
+      axios[method](url, plantData).then(response => {
+        alert('Success!');
+        location.href = '/'
+      })
+      .catch(error => {
+        if (error.response)
+          alert(JSON.stringify(error.response.data.errors))
+        else
+          alert(error)
+      });
+    }
+
+style.
+  body {
+    background-color: lightgray;
+    background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20230419/pngtree-natural-animation-white-clouds-image_2416880.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 600px;
+  }
+
+  .form-group label {
+    font-weight: bold;
+  }

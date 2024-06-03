@@ -1,0 +1,30 @@
+*{
+    font-family: "Poppins", sans-serif;
+    color: black;
+    font-size: 18px;
+}
+
+body {
+    background-color: lightgray;
+    background-image: url(https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L2ZsMjM0MTcwNjg4MTItaW1hZ2Uta3FhcDlyZHcuanBn.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    margin: 0; 
+    padding: 0; 
+}
+
+h5.text-center {
+    color: white;
+}
+
+thead .list, .container.mt-5, script .list1{
+    background-color: rgb(23, 82, 18);
+}
+
+.btn-btn-success, .btn-btn-primary, .btn-btn-primary-btn-sm, .btn-btn-danger-btn-sm, .container.mt-5.btn.btn-success{
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    border-color: rgb(255, 255, 255);
+}

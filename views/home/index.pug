@@ -1,0 +1,58 @@
+include ../head.pug
+body
+h5.text-center This web application was created to fulfill Web Technology module requirements and does not represent an actual company or service
+    .container.mt-5
+      .row.d-flex.align-items-center
+        .col-md-6
+          h1 List
+        .col-md-6.text-end
+          a.btn.btn-success(href='/add', role='button') Add      
+      table.table.table-responsive.table-hover.table-striped.table-light
+        thead
+          tr
+            th(scope="col") ID
+            th(scope="col") Plant Name
+            th(scope="col") Plant Type
+            th(scope="col") Planting Date/Time
+            th(scope="col") Location
+            th(scope="col") Actions
+        tbody
+script.
+  document.addEventListener('DOMContentLoaded', function() {
+    axios.get('/api/plant').then(function(response) {
+      const plants = response.data;
+      const tableBody = document.querySelector('table tbody');
+      plants.forEach(p => {
+        const row = document.createElement('tr');
+        const plant = p.plant;
+        row.innerHTML = `
+          <td>${p.id}</td>
+          <td>${plant.plantName}</td>
+          <td>${plant.plantType}</td>
+          <td>${plant.plantingDate}</td>
+          <td>${plant.plantLocation}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" data-id="${p.id}" onclick="window.location.href='/update/${p.id}'">Update</button>
+            <button class="btn btn-danger btn-sm" data-id="${p.id}">Delete</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+    document.addEventListener('click', function(event) {
+      if (event.target && event.target.classList.contains('btn-danger')) {
+        const plantId = event.target.getAttribute('data-id');
+        axios.delete(`/api/plant/${plantId}`).then(function(response) {
+          alert('Deleted successfully');
+          location.reload();
+        })
+        .catch(function(error) {
+          alert('Error while deleting plant: ' + error);
+        });
+      }
+    });
+  });
